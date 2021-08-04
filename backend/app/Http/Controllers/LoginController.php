@@ -12,9 +12,9 @@ class LoginController extends Controller
         $employee = Employee::where('user_name', $req->user_name)
             ->where('password', $req->password)
             ->get();
-        if ($req->user_name == 'admin' && $req->password == 'admin') {
+        if ($req->user_name == "admin" && $req->password == "admin") {
             $req->session()->put('type', "admin");
-            return response()->json(200);
+            return response()->json($req->user_name,200);
         } else if (count($employee) > 0) {
             $req->session()->put('type', "emp");
             return response()->json(200);
