@@ -8,32 +8,50 @@ import AddJob from "./components/AddJob";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import {
     useFetch,
-    createUser,
-    deleteUser,
-    editUser,
+    createEmployee,
+    createJob,
+    deleteEmployee,
+    deleteJob,
+    updateEmployee,
+    updateJob,
 } from "./components/useFetch";
 import { list } from "./List";
 
 function App() {
-    const [myuser, setUsers] = useState(list);
+    const [emp, setEmp] = useState(list);
+    const [job, setJob] = useState(list);
 
     const url = "http://localhost:8000/api/";
-    // useFetch(url, setUsers);`
+    useFetch(url, setEmp, setJob);
 
-    const addUsers = (newUser) => {
-        createUser(url, setUsers, newUser);
-        setUsers([...myuser, newUser]);
+    const addEmployee = (newEmployee) => {
+        createEmployee(url, newEmployee);
+        setEmp([...emp, newEmployee]);
+    };
+    const addJob = (newJob) => {
+        createJob(url, newJob);
+        setJob([...job, newJob]);
+    };
+    const editEmployee = (newEmp) => {
+        updateEmployee(url, newEmp);
+        const data = emp.filter((user) => user.id != newEmp.id);
+        setEmp([...data, newEmp]);
+    };
+    const editJob = (newjob) => {
+        updateJob(url, newjob);
+        const data = emp.filter((user) => user.id != newjob.id);
+        setEmp([...data, newjob]);
     };
 
-    const editUsers = (newUser) => {
-        editUser(url, newUser);
-        const data = myuser.filter((user) => user.id != newUser.id);
-        setUsers([...data, newUser]);
+    const deleteEmp = (id) => {
+        deleteEmployee(url, id);
+        const data = emp.filter((user) => user.id !== id);
+        setEmp(data);
     };
-    const deleteCallback = (id) => {
-        deleteUser(url, id);
-        const data = myuser.filter((user) => user.id !== id);
-        setUsers(data);
+    const deleteAJob = (id) => {
+        deleteJob(url, id);
+        const data = emp.filter((user) => user.id !== id);
+        setEmp(data);
     };
 
     return (
@@ -45,25 +63,25 @@ function App() {
                 </Route>
                 <Route path="/employeeList">
                     <div>
-                        <EmployeeList list={myuser} callback={deleteCallback} />
+                        <EmployeeList list={emp} callback={deleteEmp} />
                     </div>
                 </Route>
                 <Route path="/jobList">
                     <div>
-                        <JobList list={myuser} callback={deleteCallback} />
+                        <JobList list={emp} callback={deleteAJob} />
                     </div>
                 </Route>
                 <Route path="/createEmployee">
-                    <AddEmployee status="add" callback={addUsers} />
+                    <AddEmployee status="add" callback={addEmployee} />
                 </Route>
                 <Route path="/editEmployee/:id">
-                    <AddEmployee status="edit" callback={editUsers} />
+                    <AddEmployee status="edit" callback={editEmployee} />
                 </Route>
                 <Route path="/createJob">
-                    <AddJob status="add" callback={addUsers} />
+                    <AddJob status="add" callback={addJob} />
                 </Route>
                 <Route path="/editJob/:id">
-                    <AddJob status="edit" callback={editUsers} />
+                    <AddJob status="edit" callback={editJob} />
                 </Route>
                 <Route path="*">
                     <h3>404 not found</h3>
